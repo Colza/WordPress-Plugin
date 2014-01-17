@@ -11,7 +11,7 @@ Author URI: http://fastly.com/
 
 /**
  * Main plugin code.
- * @package Fastly
+ * @package Fastly (V42)
  * @version 0.97
  * @author Ryan Sandor Richards
  * @copyright 2011 Fastly.com, All Rights Reserved

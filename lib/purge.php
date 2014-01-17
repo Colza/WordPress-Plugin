@@ -12,18 +12,16 @@ class FastlyPurge {
    */
   function FastlyPurge() {
     // Posts and Pages
-    add_action('edit_post', array(&$this, 'purgePost'), 99);
-    add_action('edit_post', array(&$this, 'purgePostDependencies'), 99);
-    add_action('transition_post_status', array(&$this,'purgePostStatus'),99, 3);
-    add_action('deleted_post', array(&$this, 'purgePost'), 99);
-    add_action('deleted_post', array(&$this, 'purgeCommon'), 99);
+    add_action('edit_post', array(&$this, 'purgeAll'), 99);
+    add_action('transition_post_status', array(&$this,'purgeAll'),99, 3);
+    add_action('deleted_post', array(&$this, 'purgeAll'), 99);
     
     // Comments
-    add_action('comment_post', array(&$this, 'purgeComments'),99);
-    add_action('edit_comment', array(&$this, 'purgeComments'),99);
-    add_action('trashed_comment', array(&$this, 'purgeComments'),99);
-    add_action('untrashed_comment', array(&$this, 'purgeComments'),99);
-    add_action('deleted_comment', array(&$this, 'purgeComments'),99);
+    add_action('comment_post', array(&$this, 'purgeAll'),99);
+    add_action('edit_comment', array(&$this, 'purgeAll'),99);
+    add_action('trashed_comment', array(&$this, 'purgeAll'),99);
+    add_action('untrashed_comment', array(&$this, 'purgeAll'),99);
+    add_action('deleted_comment', array(&$this, 'purgeAll'),99);
     
     // Full purges (theme changes, etc.)
     add_action('switch_theme', array(&$this, 'purgeAll'), 99);
@@ -32,14 +30,14 @@ class FastlyPurge {
     add_action("update_option_theme_mods_".get_option('stylesheet'), array(&$this, 'purgeAll'), 99);
     
     // Links
-    add_action("deleted_link",array(&$this, 'purgeLinks'), 99);
-    add_action("edit_link",array(&$this, 'purgeLinks'), 99);
-    add_action("add_link",array(&$this, 'purgeLinks'), 99);
+    add_action("deleted_link",array(&$this, 'purgeAll'), 99);
+    add_action("edit_link",array(&$this, 'purgeAll'), 99);
+    add_action("add_link",array(&$this, 'purgeAll'), 99);
     
     // Categories
-    add_action("edit_category",array(&$this, 'purgeCategory'), 99);       
-    add_action("edit_link_category",array(&$this, 'purgeLinkCategory'), 99);
-    add_action("edit_post_tag",array(&$this, 'purgeTagCategory'), 99);
+    add_action("edit_category",array(&$this, 'purgeAll'), 99);       
+    add_action("edit_link_category",array(&$this, 'purgeAll'), 99);
+    add_action("edit_post_tag",array(&$this, 'purgeAll'), 99);
     
     // Setup API
     $this->api = new FastlyAPI(

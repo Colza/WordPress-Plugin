@@ -47,13 +47,37 @@ class FastlyAPI {
    * Sends a purge all request to the Fastly API.
    */
   function purgeAll($service_id) {
-    $url = $this->host;
-    if (!is_null($this->port) && is_numeric($this->port)) {
-      $url .= ":" . $this->port; 
+
+    $logViaErrorLog = (bool) get_option('fastly_log_purges');
+
+    $url = get_option('fastly_api_hostname').'/service/'.$service_id.'/purge_all';
+
+    if ($logViaErrorLog) {
+      error_log('[info] About to purge all | URL => {'.$url.'}, API_KEY => {'.$this->api_key.'}');
+    }
+
+    $ch = curl_init();
+
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, array());
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Fastly-Key: '.$this->api_key));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $output = curl_exec($ch);
+
+    curl_close($ch);
+
+    if ($output === false) {
+      error_log('[error] Failed to purge all | URL => {'.$url.'}, ERROR_NUMBER => {'.curl_errno($ch).'}, ERROR_MESSAGE => {'.curl_error($ch).'}');
+      return false;
     } 
-    $url .= '/service/' . $service_id . '/purge_all';
-      
-    return $this->post($url, true);
+
+    if ($logViaErrorLog) {
+      error_log('[info] Successfully purged all | URL => {'.$url.'}, OUTPUT => {'.$output.'}');
+    }
+
+    return $output;
   }
 
   /** 
